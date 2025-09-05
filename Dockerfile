@@ -1,28 +1,34 @@
-# Updated: 2025-01-04 - Force rebuild
 # Verwende die offizielle n8n Base
 FROM n8nio/n8n:latest
 
 # Wechsle zu root für Installation
 USER root
 
-# Update package list und installiere FFmpeg + dependencies
-RUN apk update && \
-    apk add --no-cache \
-    ffmpeg \
-    ffmpeg-dev \
-    && rm -rf /var/cache/apk/*
+# Debug: Zeige aktuelle OS Info
+RUN cat /etc/os-release
 
-# Verifiziere Installation
-RUN ffmpeg -version
+# Update package repository
+RUN apk update
 
-# Stelle sicher, dass ffmpeg im PATH verfügbar ist
-RUN which ffmpeg && ls -la /usr/bin/ffmpeg
+# Debug: Zeige verfügbare ffmpeg packages
+RUN apk search ffmpeg
 
-# Wechsle zurück zu node user (wichtig für n8n)
+# Installiere FFmpeg
+RUN apk add --no-cache ffmpeg
+
+# Debug: Zeige Installation
+RUN which ffmpeg || echo "ffmpeg not in PATH"
+RUN ls -la /usr/bin/ffmpeg || echo "ffmpeg not in /usr/bin/"
+RUN find / -name "ffmpeg" 2>/dev/null || echo "ffmpeg not found anywhere"
+
+# Teste FFmpeg
+RUN ffmpeg -version || echo "ffmpeg command failed"
+
+# Debug: Zeige PATH
+RUN echo "PATH: $PATH"
+
+# Wechsle zurück zu node user
 USER node
-
-# Setze Arbeitsverzeichnis
-WORKDIR /home/node
 
 # Standard n8n Command
 CMD ["n8n"]
