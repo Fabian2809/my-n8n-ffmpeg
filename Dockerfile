@@ -1,6 +1,9 @@
 # Verwende die offizielle n8n Base
 FROM n8nio/n8n:latest
 
+# Font for Emojis
+RUN apt-get update && apt-get install -y fonts-noto-core fonts-noto-ui-core
+
 # Wechsle zu root für Installation
 USER root
 
