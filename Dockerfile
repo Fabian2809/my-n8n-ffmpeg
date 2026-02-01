@@ -1,6 +1,9 @@
-FROM n8nio/n8n:latest
+FROM n8nio/n8n:1.68.0
 
-RUN cat /etc/os-release
+USER root
+
+RUN apk update && \
+    apk add --no-cache ffmpeg font-noto font-noto-emoji
 
 USER node
 
